@@ -8,6 +8,8 @@ target 'AppointmentBooking' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
   target 'AppointmentBookingTests' do
     inherit! :complete
     # Pods for testing

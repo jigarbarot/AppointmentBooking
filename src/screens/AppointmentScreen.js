@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList, StyleSheet, TouchableOpacity} from "react-native";
-import {getStore} from "../../App";
+import {View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions, Modal} from "react-native";
 import moment from 'moment'
 import {connect} from "react-redux";
+import PhotoGallery from "./PhotoGallery";
+const {width} = Dimensions.get('window')
 
 class AppointmentScreen extends Component {
     constructor(props) {
@@ -11,6 +12,10 @@ class AppointmentScreen extends Component {
         this.props.navigation.setOptions({
             title: `Appointments of ${moment().format('DD/MM/YYYY')}`
         })
+
+        this.state={
+            showGallery:false
+        }
     }
 
     render() {
@@ -39,6 +44,11 @@ class AppointmentScreen extends Component {
                         }}/>
                     </View>
                 </View>
+                <TouchableOpacity onPress={()=> this.setState({showGallery:true})}>
+                <View style={{width: width - 30,height: 40, alignItems: 'center', justifyContent: 'center', margin: 15, backgroundColor:'white', borderWidth:1, borderRadius: 10, borderColor:'#ccc'}}>
+                    <Text style={{}}>Open Gallery</Text>
+                </View>
+                </TouchableOpacity>
 
                 <FlatList
                     data={this.props.appointmentList}
@@ -46,15 +56,21 @@ class AppointmentScreen extends Component {
                     contentContainerStyle={{paddingHorizontal: 15}}
                     renderItem={({item, index}) => {
                         return (
-                            <TouchableOpacity onPress={() => this.props.navigation.push('Detail',{item})}>
-                                <View style={[styles.btn, styles.btnAvailable]}>
-                                    <Text style={styles.btnText}>{item.slot}</Text>
+                            <TouchableOpacity onPress={() => this.props.navigation.push('Detail',{item, index})}>
+                                <View style={[styles.btn, Boolean(item.userInfo) && styles.btnAllottedTime]}>
+                                    <Text style={styles.btnText} numberOfLines={1}>{item.slot }{Boolean(item.userInfo) ?` ( ${item.userInfo.firstName} ${item.userInfo.lastName} )` : ''}</Text>
                                 </View>
                             </TouchableOpacity>
                         )
                     }}
                     showsVerticalScrollIndicator={false}
                 />
+
+                <Modal
+                    visible={this.state.showGallery}
+                >
+                    <PhotoGallery handleClose={()=> this.setState({showGallery:false})} />
+                </Modal>
             </View>
         );
     }
@@ -71,13 +87,10 @@ const styles = StyleSheet.create({
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%', marginVertical: 15, borderRadius: 10
+        width: '100%', marginVertical: 15, borderRadius: 10,   backgroundColor: '#249109', paddingHorizontal: 20
     },
     btnText: {
-        color: 'white', textAlign: 'center', fontWeight: '600'
-    },
-    btnAvailable: {
-        backgroundColor: '#249109'
+        color: 'white', textAlign: 'center', fontWeight: '600',
     },
     btnAllottedTime: {
         backgroundColor: 'tomato'

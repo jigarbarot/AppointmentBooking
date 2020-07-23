@@ -24,7 +24,7 @@ class SplashScreen extends Component {
                 let hh = Math.floor(tt/60); // getting hours of day in 0-24 format
                 let mm = (tt%60); // getting minutes of the hour in 0-55 format
                 if(hh > 8 && hh<= 17){
-                    times.push({slot: ("0" + (hh % 12)).slice(-2) + ':' + ("0" + mm).slice(-2) +' '+ ap[Math.floor(hh/12)]})
+                    times.push({id: i,slot: ("0" + (hh % 12)).slice(-2) + ':' + ("0" + mm).slice(-2) +' '+ ap[Math.floor(hh/12)]})
                 }
                 tt = tt + x;
             }
@@ -34,7 +34,7 @@ class SplashScreen extends Component {
                 payload: times
             })
 
-            this.props.navigation.navigate('Appointment')
+            this.props.navigation.replace('Appointment')
 
         }
     }
